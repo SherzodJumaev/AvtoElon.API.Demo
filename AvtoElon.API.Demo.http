@@ -1,0 +1,6 @@
+@AvtoElon.API.Demo_HostAddress = http://localhost:5235
+
+GET {{AvtoElon.API.Demo_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
