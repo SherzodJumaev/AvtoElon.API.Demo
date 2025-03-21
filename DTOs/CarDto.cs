@@ -11,5 +11,6 @@
         public string City { get; set; } = string.Empty;
         public string? Definition { get; set; }
         public decimal Mileage { get; set; }
+        public long Price { get; set; }
     }
 }

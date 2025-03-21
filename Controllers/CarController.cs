@@ -1,4 +1,5 @@
 ﻿using AvtoElon.API.Demo.DTOs;
+using AvtoElon.API.Demo.Helpers;
 using AvtoElon.API.Demo.Interfaces;
 using AvtoElon.API.Demo.Mappers.CarMaps;
 using Microsoft.AspNetCore.Mvc;
@@ -19,9 +20,12 @@ namespace AvtoElon.API.Demo.Controllers
 
         // GET: api/<CarController>
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
         {
-            var cars = await _carRepository.GetAllAsync();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var cars = await _carRepository.GetAllAsync(query);
 
             return Ok(cars.Select(c => c.FromCarToCarDtoWithId()));
         }
@@ -30,6 +34,9 @@ namespace AvtoElon.API.Demo.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var car = await _carRepository.GetAsync(id);
 
             if(car == null)
@@ -44,6 +51,9 @@ namespace AvtoElon.API.Demo.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateCarDto createCarDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var carModel = createCarDto.FromCreateCarDtoToCar();
 
             var createdCar = await _carRepository.CreateAsync(carModel);
@@ -55,6 +65,9 @@ namespace AvtoElon.API.Demo.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCarDto carDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var carModel = carDto.FromUpdateCarDtoToCar();
 
             var updatedCar = await _carRepository.UpdateAsync(id, carModel);
@@ -71,6 +84,9 @@ namespace AvtoElon.API.Demo.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> SoftDelete ([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var isDeleted = await _carRepository.SoftDeleteAsync(id);
 
             if(!isDeleted)

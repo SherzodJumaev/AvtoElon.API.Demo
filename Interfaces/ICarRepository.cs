@@ -1,10 +1,11 @@
-﻿using AvtoElon.API.Demo.Models;
+﻿using AvtoElon.API.Demo.Helpers;
+using AvtoElon.API.Demo.Models;
 
 namespace AvtoElon.API.Demo.Interfaces
 {
     public interface ICarRepository
     {
-        Task<IEnumerable<Car>> GetAllAsync();
+        Task<IEnumerable<Car>> GetAllAsync(QueryObject query);
         Task<Car?> GetAsync(int id);
         Task<Car> CreateAsync(Car car);
         Task<Car?> UpdateAsync(int id, Car car);

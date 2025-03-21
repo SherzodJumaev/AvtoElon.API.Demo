@@ -1,4 +1,5 @@
 ﻿using AvtoElon.API.Demo.Data;
+using AvtoElon.API.Demo.Helpers;
 using AvtoElon.API.Demo.Interfaces;
 using AvtoElon.API.Demo.Models;
 using Microsoft.EntityFrameworkCore;
@@ -21,11 +22,39 @@ namespace AvtoElon.API.Demo.Repos
             return car;
         }
 
-        public async Task<IEnumerable<Car>> GetAllAsync()
+        public async Task<IEnumerable<Car>> GetAllAsync(QueryObject query)
         {
-            var cars = await _context.Cars.ToListAsync();
+            var cars = _context.Cars.AsQueryable();
 
-            return cars;
+            if (!string.IsNullOrWhiteSpace(query.Name))
+            {
+                cars = cars.Where(c => c.Name.Contains(query.Name));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.City))
+            {
+                cars = cars.Where(c => c.City.Contains(query.City));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if(query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    cars = query.isDescending ? cars.OrderByDescending(c => c.Name) : cars.OrderBy(c => c.Name);
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if(query.SortBy.Equals("Price", StringComparison.OrdinalIgnoreCase))
+                {
+                    cars = query.isDescending ? cars.OrderByDescending(c => c.Price) : cars.OrderBy(c => c.Price);
+                }
+            }
+
+            int skipNumber = (query.PageNumber - 1) * query.PageSize;
+
+            return await cars.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
         public async Task<Car?> GetAsync(int id)

@@ -18,7 +18,8 @@ namespace AvtoElon.API.Demo.Mappers.CarMaps
                 Mileage = carDto.Mileage,
                 Name = carDto.Name,
                 Year = carDto.Year,
-                Transmission = carDto.Transmission
+                Transmission = carDto.Transmission,
+                Price = carDto.Price
             };
         }
 
@@ -33,7 +34,8 @@ namespace AvtoElon.API.Demo.Mappers.CarMaps
                 Mileage = carModel.Mileage,
                 Name = carModel.Name,
                 Year = carModel.Year,
-                Transmission = carModel.Transmission
+                Transmission = carModel.Transmission,
+                Price = carModel.Price
             };
         }
 
@@ -48,7 +50,8 @@ namespace AvtoElon.API.Demo.Mappers.CarMaps
                 Mileage = carDto.Mileage,
                 Name = carDto.Name,
                 Year = carDto.Year,
-                Transmission = carDto.Transmission
+                Transmission = carDto.Transmission,
+                Price = carDto.Price
             };
         }
 
@@ -64,7 +67,8 @@ namespace AvtoElon.API.Demo.Mappers.CarMaps
                 Mileage = car.Mileage,
                 Name = car.Name,
                 Year = car.Year,
-                Transmission = car.Transmission
+                Transmission = car.Transmission,
+                Price = car.Price
             };
         }
     }
