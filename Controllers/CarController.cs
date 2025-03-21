@@ -2,6 +2,7 @@
 using AvtoElon.API.Demo.Helpers;
 using AvtoElon.API.Demo.Interfaces;
 using AvtoElon.API.Demo.Mappers.CarMaps;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,6 +11,7 @@ namespace AvtoElon.API.Demo.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CarController : ControllerBase
     {
         private readonly ICarRepository _carRepository;
