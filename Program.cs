@@ -20,12 +20,17 @@ namespace AvtoElon.API.Demo
             // Add services to the container.
 
             builder.Services.AddControllers();
+                //.AddNewtonsoftJson(options =>
+                //{
+                //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                //});
+
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
-               
+
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
@@ -94,6 +99,8 @@ namespace AvtoElon.API.Demo
 
             builder.Services.AddScoped<ICarRepository, CarRepository>();
             builder.Services.AddScoped<ITokenService, TokenService>();
+            builder.Services.AddScoped<IFileUploadService, FileUploadService>();
+            builder.Services.AddScoped<IDeleteCarPictures, DeleteCarPictures>();
 
             var app = builder.Build();
 

@@ -1,6 +1,8 @@
 ﻿using AvtoElon.API.Demo.Data;
+using AvtoElon.API.Demo.DTOs.CarDtos;
 using AvtoElon.API.Demo.Helpers;
 using AvtoElon.API.Demo.Interfaces;
+using AvtoElon.API.Demo.Mappers.CarMaps;
 using AvtoElon.API.Demo.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,9 +11,13 @@ namespace AvtoElon.API.Demo.Repos
     public class CarRepository : ICarRepository
     {
         private readonly ApplicationDBContext _context;
-        public CarRepository(ApplicationDBContext context)
+        private readonly IWebHostEnvironment _environment;
+        private readonly IFileUploadService _fileUploadService;
+        public CarRepository(ApplicationDBContext context, IWebHostEnvironment environment, IFileUploadService fileUploadService)
         {
             _context = context;
+            _environment = environment;
+            _fileUploadService = fileUploadService;
         }
 
         public async Task<Car> CreateAsync(Car car)
@@ -19,26 +25,36 @@ namespace AvtoElon.API.Demo.Repos
             await _context.Cars.AddAsync(car);
             await _context.SaveChangesAsync();
 
+            var lastCarId = car.Id;
+
+            foreach (var item in car.CarPictures)
+            {
+                if (item.FileName == null || item.FileName.Length == 0)
+                    return null;
+
+                await _fileUploadService.UploadFile(item, lastCarId);
+            }
+
             return car;
         }
 
         public async Task<IEnumerable<Car>> GetAllAsync(QueryObject query)
         {
-            var cars = _context.Cars.AsQueryable();
+            var cars = _context.Cars.Include(p => p.CarPicturesList).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(query.Name))
             {
                 cars = cars.Where(c => c.Name.Contains(query.Name));
             }
 
-            if (!string.IsNullOrWhiteSpace(query.City))
-            {
-                cars = cars.Where(c => c.City.Contains(query.City));
-            }
+            //if (!string.IsNullOrWhiteSpace(query.City))
+            //{
+            //    cars = cars.Where(c => c.City.Contains(query.City));
+            //}
 
             if (!string.IsNullOrWhiteSpace(query.SortBy))
             {
-                if(query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                if (query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
                 {
                     cars = query.isDescending ? cars.OrderByDescending(c => c.Name) : cars.OrderBy(c => c.Name);
                 }
@@ -46,7 +62,7 @@ namespace AvtoElon.API.Demo.Repos
 
             if (!string.IsNullOrWhiteSpace(query.SortBy))
             {
-                if(query.SortBy.Equals("Price", StringComparison.OrdinalIgnoreCase))
+                if (query.SortBy.Equals("Price", StringComparison.OrdinalIgnoreCase))
                 {
                     cars = query.isDescending ? cars.OrderByDescending(c => c.Price) : cars.OrderBy(c => c.Price);
                 }
@@ -57,9 +73,9 @@ namespace AvtoElon.API.Demo.Repos
             return await cars.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
-        public async Task<Car?> GetAsync(int id)
+        public async Task<Car> GetAsync(int id)
         {
-            var car = await _context.Cars.FindAsync(id);
+            var car = await _context.Cars.Include(x => x.CarPicturesList).FirstOrDefaultAsync(i => i.Id == id);
 
             if (car == null)
             {
@@ -84,7 +100,7 @@ namespace AvtoElon.API.Demo.Repos
             return true;
         }
 
-        public async Task<Car?> UpdateAsync(int id, Car car)
+        public async Task<Car> UpdateAsync(int id, Car car)
         {
             var foundCar = await _context.Cars.FirstOrDefaultAsync(c => c.Id == id);
 
@@ -93,14 +109,15 @@ namespace AvtoElon.API.Demo.Repos
                 return null;
             }
 
-            foundCar.CarBody = car.CarBody;
-            foundCar.City = car.City;
-            foundCar.Mileage = car.Mileage;
-            foundCar.Year = car.Year;
-            foundCar.Color = car.Color;
-            foundCar.Definition = car.Definition;
-            foundCar.Transmission = car.Transmission;
+            foundCar.Category = car.Category;
+            foundCar.Currency = car.Currency;
+            foundCar.Location = car.Location;
             foundCar.Name = car.Name;
+            foundCar.ContactPhone = car.ContactPhone;
+            //foundCar.CarPicturesList = car.CarPicturesList;
+            foundCar.CreatedAt = car.CreatedAt;
+            foundCar.Price = car.Price;
+            foundCar.Description = car.Description;
 
             await _context.SaveChangesAsync();
 

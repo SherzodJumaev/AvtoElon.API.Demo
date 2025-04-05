@@ -1,12 +1,10 @@
-﻿using AvtoElon.API.Demo.DTOs.CarDtos;
-using AvtoElon.API.Demo.Helpers;
+﻿using AvtoElon.API.Demo.Helpers;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AvtoElon.API.Demo.Models
+namespace AvtoElon.API.Demo.DTOs.CarDtos
 {
-    public class Car
+    public class CarDto
     {
-        public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public decimal Price { get; set; }
@@ -15,9 +13,7 @@ namespace AvtoElon.API.Demo.Models
         public Location Location { get; set; }
         public string ContactName { get; set; } = string.Empty;
         public string ContactPhone { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        [NotMapped]
-        public List<IFormFile> CarPictures { get; set; }
-        public List<CarPictureDto> CarPicturesList { get; set; } = [];
+        public DateTime CreatedAt { get; set; }
+        public List<string> CarPicturesNames { get; set; }
     }
 }

@@ -22,6 +22,30 @@ namespace AvtoElon.API.Demo.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("AvtoElon.API.Demo.DTOs.CarDtos.CarPictureDto", b =>
+                {
+                    b.Property<int>("CarPictureId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CarPictureId"));
+
+                    b.Property<int>("CarId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImageName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CarPictureId");
+
+                    b.HasIndex("CarId");
+
+                    b.ToTable("CarPictureDtos");
+                });
+
             modelBuilder.Entity("AvtoElon.API.Demo.Models.AppUser", b =>
                 {
                     b.Property<string>("Id")
@@ -95,88 +119,36 @@ namespace AvtoElon.API.Demo.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CarBody")
-                        .IsRequired()
+                    b.Property<int>("Category")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ContactName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("City")
-                        .IsRequired()
+                    b.Property<string>("ContactPhone")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Color")
-                        .IsRequired()
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Definition")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal>("Mileage")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("Location")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("Price")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Transmission")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Cars");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CarBody = "New",
-                            City = "Tashkent",
-                            Color = "Black",
-                            Definition = "smth",
-                            IsDeleted = false,
-                            Mileage = 40m,
-                            Name = "Gentra",
-                            Price = 0L,
-                            Transmission = "smth",
-                            Year = 2020
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CarBody = "New",
-                            City = "Jizzakh",
-                            Color = "White",
-                            Definition = "smth",
-                            IsDeleted = false,
-                            Mileage = 39m,
-                            Name = "Damas",
-                            Price = 0L,
-                            Transmission = "smth",
-                            Year = 2022
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CarBody = "New",
-                            City = "Kashkadarya",
-                            Color = "Blue-white",
-                            Definition = "smth",
-                            IsDeleted = false,
-                            Mileage = 45m,
-                            Name = "Nexia 1.6",
-                            Price = 0L,
-                            Transmission = "smth",
-                            Year = 2019
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -326,6 +298,17 @@ namespace AvtoElon.API.Demo.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("AvtoElon.API.Demo.DTOs.CarDtos.CarPictureDto", b =>
+                {
+                    b.HasOne("AvtoElon.API.Demo.Models.Car", "Car")
+                        .WithMany("CarPicturesList")
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Car");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -375,6 +358,11 @@ namespace AvtoElon.API.Demo.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("AvtoElon.API.Demo.Models.Car", b =>
+                {
+                    b.Navigation("CarPicturesList");
                 });
 #pragma warning restore 612, 618
         }
