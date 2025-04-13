@@ -16,6 +16,7 @@ namespace AvtoElon.API.Demo.Data
 
         public DbSet<Car> Cars { get; set; }
         public DbSet<CarPictureDto> CarPictureDtos { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

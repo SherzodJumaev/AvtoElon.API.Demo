@@ -101,6 +101,7 @@ namespace AvtoElon.API.Demo
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IFileUploadService, FileUploadService>();
             builder.Services.AddScoped<IDeleteCarPictures, DeleteCarPictures>();
+            builder.Services.AddScoped<IContactRepository, ContactRepository>();
 
             var app = builder.Build();
 
