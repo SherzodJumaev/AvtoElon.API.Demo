@@ -46,8 +46,8 @@ namespace AvtoElon.API.Demo.Controllers
 
             var userPortfolio = await _portfolioRepository.GetPortfolioAsync(appUser, cancellationToken);
             
-            //return Ok(userPortfolio.Select(up => up.FromCarToCarDto()));
-            return Ok(userPortfolio);
+            return Ok(userPortfolio.Select(up => up.FromCarToCarDto()));
+            //return Ok(userPortfolio);
         }
 
         [HttpPut("{id}")]
