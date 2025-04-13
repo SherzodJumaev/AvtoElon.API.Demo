@@ -19,5 +19,8 @@ namespace AvtoElon.API.Demo.Models
         [NotMapped]
         public List<IFormFile> CarPictures { get; set; }
         public List<CarPictureDto> CarPicturesList { get; set; } = [];
+
+        public string UserID { get; set; }
+        public AppUser AppUser { get; set; } = null!;
     }
 }

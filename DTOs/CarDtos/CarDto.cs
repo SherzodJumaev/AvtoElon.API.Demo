@@ -1,5 +1,4 @@
 ﻿using AvtoElon.API.Demo.Helpers;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AvtoElon.API.Demo.DTOs.CarDtos
 {

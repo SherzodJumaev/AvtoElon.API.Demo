@@ -28,6 +28,11 @@ namespace AvtoElon.API.Demo.Data
             //    new Car { Id = 3, Name = "Nexia 1.6", Color = "Blue-white", Year = 2019, CarBody = "New", City = "Kashkadarya", Mileage = 45m, Transmission = "smth", Definition = "smth" }
             //);
 
+            modelBuilder.Entity<AppUser>()
+                .HasMany(u => u.Cars)
+                .WithOne(u => u.AppUser)
+                .HasForeignKey(u => u.UserID);
+
             List<IdentityRole> roles = new List<IdentityRole>
             {
                 new IdentityRole

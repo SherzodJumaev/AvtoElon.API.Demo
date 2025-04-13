@@ -6,24 +6,26 @@ using AvtoElon.API.Demo.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Threading.Tasks;
 
 namespace AvtoElon.API.Demo
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
-                //.AddNewtonsoftJson(options =>
-                //{
-                //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-                //});
+            builder.Services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                });
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddEndpointsApiExplorer();
@@ -57,6 +59,23 @@ namespace AvtoElon.API.Demo
                 });
             });
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                           .AllowAnyHeader()
+                           .AllowAnyMethod();
+                });
+                options.AddPolicy("AllowFrontend", policy =>
+                {
+                    policy.WithOrigins("http://localhost:4200")
+                           .AllowAnyHeader()
+                           .AllowAnyMethod()
+                           .WithExposedHeaders("X-Pagination-TotalItems", "X-Pagination-PageSize", "X-Pagination-CurrentPage", "X-Pagination-TotalPages") // Pagination headerlarini ochish
+                           .AllowCredentials();
+                });
+            });
 
             builder.Services.AddDbContextPool<ApplicationDBContext>(options =>
             {
@@ -102,8 +121,17 @@ namespace AvtoElon.API.Demo
             builder.Services.AddScoped<IFileUploadService, FileUploadService>();
             builder.Services.AddScoped<IDeleteCarPictures, DeleteCarPictures>();
             builder.Services.AddScoped<IContactRepository, ContactRepository>();
+            builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
 
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+                await SeedData.SeedRolesAsync(roleManager);
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -113,6 +141,15 @@ namespace AvtoElon.API.Demo
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles
+                (new StaticFileOptions
+                {
+                    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Images")),
+                    RequestPath = "/images"
+                });
+
+            app.UseRouting();
+            app.UseCors("AllowAll");
 
             app.UseAuthentication();
             app.UseAuthorization();

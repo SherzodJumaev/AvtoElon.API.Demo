@@ -10,6 +10,7 @@ namespace AvtoElon.API.Demo.DTOs.ContactDTOs
 
         [Required]
         [MaxLength(30)]
+        [EmailAddress]
         public string Email { get; set; }
 
         [Required]

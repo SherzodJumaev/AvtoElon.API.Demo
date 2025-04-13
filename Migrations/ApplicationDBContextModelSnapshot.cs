@@ -146,7 +146,12 @@ namespace AvtoElon.API.Demo.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("UserID")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("Cars");
                 });
@@ -334,6 +339,15 @@ namespace AvtoElon.API.Demo.Migrations
                     b.Navigation("Car");
                 });
 
+            modelBuilder.Entity("AvtoElon.API.Demo.Models.Car", b =>
+                {
+                    b.HasOne("AvtoElon.API.Demo.Models.AppUser", "AppUser")
+                        .WithMany("Cars")
+                        .HasForeignKey("UserID");
+
+                    b.Navigation("AppUser");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -383,6 +397,11 @@ namespace AvtoElon.API.Demo.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("AvtoElon.API.Demo.Models.AppUser", b =>
+                {
+                    b.Navigation("Cars");
                 });
 
             modelBuilder.Entity("AvtoElon.API.Demo.Models.Car", b =>
