@@ -17,12 +17,14 @@ namespace AvtoElon.API.Demo.Helpers
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum Category
     {
+        [EnumMember(Value = "default")]
+        Default,
         [EnumMember(Value = "yengil_avtomobillar")]
         YengilAvtomobillar,
         [EnumMember(Value = "extiyot_qisimlar")]
         EhtiyotQismlar,
         [EnumMember(Value = "xizmatlar")]
-        Xizmatlar
+        Xizmatlar,
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]

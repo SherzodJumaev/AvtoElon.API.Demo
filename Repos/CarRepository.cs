@@ -47,10 +47,22 @@ namespace AvtoElon.API.Demo.Repos
                 cars = cars.Where(c => c.Name.Contains(query.Name));
             }
 
-            //if (!string.IsNullOrWhiteSpace(query.City))
-            //{
-            //    cars = cars.Where(c => c.City.Contains(query.City));
-            //}
+            if (query.Category == Category.EhtiyotQismlar)
+            {
+                cars = cars.Where(c => c.Category == query.Category);
+            }
+            else if (query.Category == Category.YengilAvtomobillar)
+            {
+                cars = cars.Where(c => c.Category == query.Category);
+            }
+            else if (query.Category == Category.Xizmatlar)
+            {
+                cars = cars.Where(c => c.Category == query.Category);
+            }
+            else
+            {
+                cars = cars;
+            }
 
             if (!string.IsNullOrWhiteSpace(query.SortBy))
             {
